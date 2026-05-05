@@ -15,7 +15,7 @@ spec:
       containers:
       - name: frontend-container
         # Ganti dengan nama image yang Anda push ke Docker Hub melalui Jenkins
-        image: abdillah11/tcg-frontend:latest 
+        image: abdillah11/frontend:latest 
         ports:
         - containerPort: 80
 ---
