@@ -15,7 +15,7 @@ pipeline {
                 sh "docker build -t ${DOCKER_HUB_USER}/frontend:latest ./frontend"
                 sh "docker build -t ${DOCKER_HUB_USER}/backend:latest ./backend"
                 
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-login', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-login', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     sh "echo \$PASS | docker login -u \$USER --password-stdin"
                     sh "docker push ${DOCKER_HUB_USER}/frontend:latest"
                     sh "docker push ${DOCKER_HUB_USER}/backend:latest"
