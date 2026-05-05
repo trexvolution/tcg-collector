@@ -24,10 +24,16 @@ pipeline {
         }
         stage('Deploy to AKS') {
             steps {
-            // ID 'k8s-config' harus sesuai dengan ID yang Anda buat di Jenkins Credentials
-            withKubeConfig([credentialsId: 'k8s-config']) {
-            sh 'kubectl apply -f k8s/backend-deployment.yaml'
-            sh 'kubectl apply -f k8s/frontend-deployment.yaml'
+                withKubeConfig([credentialsId: 'k8s-config']) {
+                    // 1. Jalankan semua file manifest di folder k8s (termasuk ingress.yaml)
+                    sh 'kubectl apply -f k8s/'
+                    
+                    // 2. PAKSA RESTART agar variabel NAMA/NIM terbaru terinjeksi
+                    sh 'kubectl rollout restart deployment tcg-frontend'
+                    sh 'kubectl rollout restart deployment tcg-backend'
+                    
+                    // 3. Pastikan Ingress Controller terinstal (Opsional, untuk jaga-jaga)
+                    sh 'kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml'
                 }
             }
         }
