@@ -3,9 +3,11 @@ kind: Ingress
 metadata:
   name: tcg-ingress
   annotations:
-    # Menghapus prefix /api sebelum diteruskan ke Flask jika perlu
-    nginx.ingress.kubernetes.io/rewrite-target: / 
+    # Anotasi lama tetap boleh ada untuk kompatibilitas
+    kubernetes.io/ingress.class: nginx
 spec:
+  # BARIS WAJIB: Agar ADDRESS terisi dan IP muncul
+  ingressClassName: nginx 
   rules:
   - http:
       paths:
@@ -13,7 +15,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: backend-service # Harus sama dengan nama Service di atas
+            name: backend-service
             port:
               number: 5000
       - path: /
