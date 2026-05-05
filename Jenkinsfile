@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/username/repo-anda.git'
+                git branch: 'main', url: 'https://github.com/trexvolution/tcg-collector.git'
             }
         }
         stage('Build & Push') {
