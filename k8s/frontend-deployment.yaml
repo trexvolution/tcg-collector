@@ -14,17 +14,22 @@ spec:
     spec:
       containers:
       - name: frontend-container
-        # Ganti dengan nama image yang Anda push ke Docker Hub melalui Jenkins
         image: abdillah11/frontend:latest 
         ports:
         - containerPort: 80
+        # --- TAMBAHKAN BAGIAN INI ---
+        env:
+        - name: NAMA
+          value: "Abdillah"
+        - name: NIM
+          value: "2408515"
+        # ----------------------------
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend-service
 spec:
-  # Sesuai poin 2 tugas Anda: tipe Service ClusterIP agar hanya bisa diakses via Ingress
   type: ClusterIP 
   selector:
     app: tcg-frontend
