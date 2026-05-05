@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_HUB_USER = 'username_anda'
+        DOCKER_HUB_USER = 'abdillah11'
         APP_NAME = 'tcg-app'
     }
     stages {
