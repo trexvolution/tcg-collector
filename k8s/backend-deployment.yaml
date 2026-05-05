@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcg-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcg-backend
+  template:
+    metadata:
+      labels:
+        app: tcg-backend
+    spec:
+      containers:
+      - name: backend-container
+        image: username-dockerhub/tcg-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NAMA_PRAKTIKAN
+          value: "Abdillah" # Identity Injection[cite: 4]
+        - name: NIM_PRAKTIKAN
+          value: "2408515" # Identity Injection[cite: 4]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP # Sesuai instruksi (Akses hanya via Ingress)
+  selector:
+    app: tcg-backend
+  ports:
+  - port: 5000
+    targetPort: 5000

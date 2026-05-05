@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCG Collector Hub</title>
+    <style>
+        :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #2c3e50; }
+        body { font-family: 'Verdana', sans-serif; background-color: var(--dark-bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        .header-box { text-align: center; border: 2px solid var(--gold); padding: 20px; border-radius: 15px; margin-bottom: 30px; background: rgba(20, 20, 20, 0.8); width: 80%; max-width: 600px; }
+        .owner-info { color: var(--gold); font-size: 1.1em; letter-spacing: 1px; }
+
+        .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; width: 90%; max-width: 1000px; }
+        
+        .card { background: var(--card-bg); border: 4px solid #fff; border-radius: 10px; height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s; cursor: pointer; }
+        .card:hover { transform: translateY(-10px) rotate(2deg); border-color: var(--gold); box-shadow: 0 0 20px var(--gold); }
+        .card::before { content: "★ ★ ★"; color: var(--gold); font-size: 0.8em; margin-bottom: 15px; }
+        .card-name { font-weight: bold; text-align: center; padding: 0 10px; text-transform: uppercase; font-size: 0.9em; }
+
+        .input-panel { margin-top: 40px; background: #1e1e1e; padding: 20px; border-radius: 10px; border-top: 3px solid var(--gold); }
+        input { padding: 10px; width: 250px; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; background: var(--gold); color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #b8962e; }
+    </style>
+</head>
+<body>
+
+    <div class="header-box">
+        <h1 id="title">TCG LOADING...</h1>
+        <div class="owner-info">
+            PROPRIETARY OF: <span id="owner_name">Misterius</span><br>
+            ID NO: <span id="owner_nim">00000000</span>
+        </div>
+    </div>
+
+    <div class="deck-grid" id="deck">
+        </div>
+
+    <div class="input-panel">
+        <input type="text" id="cardName" placeholder="Ketik nama kartu baru...">
+        <button onclick="addCard()">ADD TO DECK</button>
+    </div>
+
+    <script>
+        const API = "/api";
+
+        async function updateUI() {
+            try {
+                const res = await fetch(`${API}/info`);
+                const data = await res.json();
+                
+                document.getElementById('title').innerText = data.judul_katalog;
+                document.getElementById('owner_name').innerText = data.pemilik;
+                document.getElementById('owner_nim').innerText = data.nim;
+
+                const deck = document.getElementById('deck');
+                deck.innerHTML = '';
+                data.items.forEach(name => {
+                    deck.innerHTML += `
+                        <div class="card">
+                            <div class="card-name">${name}</div>
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error("API Offline"); }
+        }
+
+        async function addCard() {
+            const input = document.getElementById('cardName');
+            if(!input.value) return;
+
+            await fetch(`${API}/add-item`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ item: input.value })
+            });
+            input.value = '';
+            updateUI();
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
