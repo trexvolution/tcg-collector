@@ -24,14 +24,11 @@ pipeline {
         }
         stage('Deploy to AKS') {
             steps {
-                // Menggunakan kubeconfig yang sudah dikonfigurasi di Jenkins
-                sh "kubectl apply -f k8s/backend-deployment.yaml"
-                sh "kubectl apply -f k8s/frontend-deployment.yaml"
-                sh "kubectl apply -f k8s/ingress.yaml"
-                
-                // Rollout restart agar image terbaru segera ditarik
-                sh "kubectl rollout restart deployment/backend-deployment"
-                sh "kubectl rollout restart deployment/frontend-deployment"
+            // ID 'k8s-config' harus sesuai dengan ID yang Anda buat di Jenkins Credentials
+            withKubeConfig([credentialsId: 'k8s-config']) {
+            sh 'kubectl apply -f k8s/backend-deployment.yaml'
+            sh 'kubectl apply -f k8s/frontend-deployment.yaml'
+                }
             }
         }
     }
